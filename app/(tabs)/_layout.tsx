@@ -1,21 +1,39 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { ThemedText } from '@/components/ThemedText';
+import { supabase } from '@/lib/supabase';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  };
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
+        headerShown: true,
+        headerRight: () => (
+          <TouchableOpacity 
+            onPress={handleSignOut}
+            style={{ marginRight: 15 }}
+          >
+            <ThemedText>Cerrar Sesión</ThemedText>
+          </TouchableOpacity>
+        ),
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({

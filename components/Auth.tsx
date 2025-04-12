@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { Button, Input } from '@rneui/themed';
+import { router } from 'expo-router';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -19,7 +20,11 @@ export default function Auth() {
   const handleSignIn = async () => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+    } else {
+      router.replace('/(tabs)/playas');
+    }
     setLoading(false);
   };
 
@@ -29,15 +34,17 @@ export default function Auth() {
       provider: 'google',
     });
     if (error) Alert.alert(error.message);
+    else router.replace('/(tabs)/playas');
     setLoading(false);
   };
 
-  const handleFacebookSignIn = async () => {
+  const handleGithubSignIn = async () => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'facebook',
+      provider: 'github',
     });
     if (error) Alert.alert(error.message);
+    else router.replace('/(tabs)/playas');
     setLoading(false);
   };
 
@@ -80,10 +87,10 @@ export default function Auth() {
         buttonStyle={[styles.button, styles.socialButton]}
       />
       <Button
-        title="Continuar con Facebook"
-        onPress={handleFacebookSignIn}
+        title="Continuar con GitHub"
+        onPress={handleGithubSignIn}
         loading={loading}
-        icon={{ type: 'font-awesome', name: 'facebook' }}
+        icon={{ type: 'font-awesome', name: 'github' }}
         buttonStyle={[styles.button, styles.socialButton]}
       />
     </View>
